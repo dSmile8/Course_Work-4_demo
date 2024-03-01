@@ -1,10 +1,12 @@
 def sort_list_salary(data_list) -> list:
     """Сортируем список вакансий по ключу: средняя_зп в порядке убывания"""
+
     return sorted(data_list, reverse=True)
 
 
 def get_vacancies_by_salary(data_list, salary) -> list:
     """Отбирает вакансии по указанной средней зарплате (больше или равно указанной)"""
+
     if not isinstance(salary, int):
         salary = 0
     new_list = []
@@ -16,6 +18,7 @@ def get_vacancies_by_salary(data_list, salary) -> list:
 
 def get_top_n(data_list, top_n):
     """Получаем список из N элементов и выводим словари этого списка"""
+
     if top_n == 0:
         return data_list
     else:
