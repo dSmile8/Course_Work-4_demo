@@ -1,6 +1,3 @@
-from src.work_with_file import WorkWithFile
-
-
 def sort_list_salary(data_list) -> list:
     """Сортируем список вакансий по ключу: средняя_зп в порядке убывания"""
     return sorted(data_list, reverse=True)
@@ -10,12 +7,10 @@ def get_vacancies_by_salary(data_list, salary) -> list:
     """Отбирает вакансии по указанной средней зарплате (больше или равно указанной)"""
     if not isinstance(salary, int):
         salary = 0
-
     new_list = []
     for data in data_list:
         if data.average_salary >= salary:
             new_list.append(data)
-
     return new_list
 
 
@@ -39,14 +34,19 @@ def get_sort_schedule(data_list, schedule):
             schedule_sort_list.append(i)
     return schedule_sort_list
 
+
 def print_vacancies(data_list) -> None:
+    """Печатаем информацию о вакансиях"""
+
     count = 0
     for data in data_list:
-        print(f'{count+1}) Вакансия: {data.name} / Ссылка: {data.url}\n'
+        print(f'{count + 1}) Вакансия: {data.name} / Ссылка: {data.url}\n'
               f'Город: {data.area}\n'
               f'Зарплата: {data.salary} {data.currency} / Средняя ЗП: {data.average_salary} {data.currency}\n'
-              f'График работы: {data.schedule}\n')
+              f'График работы: {data.schedule}\n'
+              f'Требования: {data.requirement}\n')
         count += 1
+
 
 def string_to_number(string) -> int:
     """
@@ -59,4 +59,3 @@ def string_to_number(string) -> int:
         return number
     except ValueError:
         return 0
-
