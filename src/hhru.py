@@ -5,7 +5,7 @@ class VacanciesManager:
     all = []
 
     def __init__(self, name=None, url=None, salary=0, salary_from=None, salary_to=None, currency=None, schedule=None,
-                 average_salary=None):
+                 average_salary=None, area=None):
         self.vacancies_list = None
         a = WorkWithFile()
         self.data = a.data_from_json()['items']
@@ -17,6 +17,8 @@ class VacanciesManager:
         self.currency = currency
         self.schedule = schedule
         self.average_salary = average_salary
+        self.area = area
+
 
     def sorted_list(self):
         """Сортирует JSON файл и возвращает новый список словарей с нужными нам параметрами """
@@ -46,6 +48,7 @@ class VacanciesManager:
                 'salary_to': salary_to,
                 'currency': currency,
                 'schedule': data['schedule']['name'].lower(),
+                'area': data['area']['name']
             }
 
             self.vacancies_list.append(vacancies_dict)
@@ -67,8 +70,9 @@ class VacanciesManager:
             currency = item['currency']
             schedule = item['schedule']
             average_salary = item['average_salary']
+            area = item['area']
 
-            vacancy = VacanciesManager(name, url, salary, salary_from, salary_to, currency, schedule, average_salary)
+            vacancy = VacanciesManager(name, url, salary, salary_from, salary_to, currency, schedule, average_salary, area)
             VacanciesManager.all.append(vacancy)
         return VacanciesManager.all
 
@@ -103,7 +107,7 @@ class VacanciesManager:
 
     def __repr__(self):
         """Отображает информацию для разработчика"""
-        return f'{self.__class__.__name__},{self.name}, {self.url}, {self.salary}, {self.salary_from}, ' \
+        return f'{self.__class__.__name__},{self.name}, {self.url}, {self.area}, {self.salary}, {self.salary_from}, ' \
                f'{self.salary_to}, {self.average_salary}, {self.currency}, {self.schedule}'
 
 
