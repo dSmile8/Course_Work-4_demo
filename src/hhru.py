@@ -104,7 +104,7 @@ class VacanciesManager:
     def __repr__(self):
         """Отображает информацию для разработчика"""
         return f'{self.__class__.__name__},{self.name}, {self.url}, {self.salary}, {self.salary_from}, ' \
-               f'{self.salary_to}, {self.currency}, {self.schedule}, {self.average_salary}'
+               f'{self.salary_to}, {self.average_salary}, {self.currency}, {self.schedule}'
 
 
     def __str__(self) -> str:
@@ -112,3 +112,47 @@ class VacanciesManager:
         Отображает информацию о ваканси для пользователей
         """
         return f'{self.name}: {self.salary}'
+
+    def __ge__(self, other) -> bool:
+        """
+        Проверяет, является ли зарпата по данной вакансии выше или равна другой
+        """
+        if isinstance(other, self.__class__):
+            return {self.average_salary} >= other.average_salary
+        elif isinstance(other, int):
+            return self.average_salary >= other
+        else:
+            raise TypeError("Сравнение данных объектов невозможно")
+
+    def __gt__(self, other) -> bool:
+        """
+        Проверяет, является ли средняя зарпата по данной вакансии выше другой
+        """
+        if isinstance(other, self.__class__):
+            return self.average_salary > other.average_salary
+        elif isinstance(other, int):
+            return self.average_salary > other
+        else:
+            raise TypeError("Сравнение данных объектов невозможно")
+
+    def __le__(self, other) -> bool:
+        """
+        Проверяет, является ли зарпата по данной вакансии ниже или равна другой
+        """
+        if isinstance(other, self.__class__):
+            return self.average_salary <= other.average_salary
+        elif isinstance(other, int):
+            return self.average_salary <= other
+        else:
+            raise TypeError("Сравнение данных объектов невозможно")
+
+    def __lt__(self, other) -> bool:
+        """
+        Проверяет, является ли зарпата по данной вакансии ниже другой
+        """
+        if isinstance(other, self.__class__):
+            return self.average_salary < other.average_salary
+        elif isinstance(other, int):
+            return self.average_salary < other
+        else:
+            raise TypeError("Сравнение данных объектов невозможно")
