@@ -1,36 +1,62 @@
-from src.hhru import WorkWithFile
+from src.work_with_file import WorkWithFile
 
 
-class TopN(WorkWithFile):
-    """Класс для финальной обработки данных, по запросам пользователя"""
+def sort_list_salary(data_list) -> list:
+    """Сортируем список вакансий по ключу: средняя_зп в порядке убывания"""
+    return sorted(data_list, reverse=True)
 
-    def __init__(self, n, schedule):
-        super().__init__()
-        self.n = n
-        self.schedule = schedule
 
-    @classmethod
-    def sort_list_salary(cls, data_list):
-        """Сортируем список словарей по ключу: средняя_зп"""
+def get_vacancies_by_salary(data_list, salary) -> list:
+    """Отбирает вакансии по указанной средней зарплате (больше или равно указанной)"""
+    if not isinstance(salary, int):
+        salary = 0
 
-        return sorted(data_list, key=lambda k: k['average_salary'])[::-1]
+    new_list = []
+    for data in data_list:
+        if data.average_salary >= salary:
+            new_list.append(data)
 
-    def get_sort_schedule(self):
-        """Сортируем список по ключевым словам, входящим в рабочий график"""
+    return new_list
 
-        schedule_sort_list = []
-        sorted_list = self.sort_list_salary(WorkWithFile.data_from_json(self))
-        for i in sorted_list:
-            for word in self.schedule:
-                if i['schedule'].find(word) != -1:  # Если слово найдено
-                    schedule_sort_list.append(i)    # Добавляем словарь в список schedule_sort_list
-            if not self.schedule:  # если пользователь ничего не ввел, добавляем в список вакансии со всеми расписаниями
-                schedule_sort_list.append(i)
 
-        return schedule_sort_list
+def get_top_n(data_list, top_n):
+    """Получаем список из N элементов и выводим словари этого списка"""
+    if top_n == 0:
+        return data_list
+    else:
+        return data_list[0:top_n]
 
-    def get_top_n(self):
-        """Получаем список из N элементов и выводим словари этого списка"""
 
-        for i in self.get_sort_schedule()[0:self.n]:
-            print(i)
+def get_sort_schedule(data_list, schedule):
+    """Сортируем список по ключевым словам, входящим в рабочий график"""
+
+    schedule_sort_list = []
+    for i in data_list:
+        for word in schedule:
+            if i.schedule.find(word) != -1:  # Если слово найдено
+                schedule_sort_list.append(i)  # Добавляем словарь в список schedule_sort_list
+        if not schedule:  # если пользователь ничего не ввел, добавляем в список вакансии со всеми расписаниями
+            schedule_sort_list.append(i)
+    return schedule_sort_list
+
+def print_vacancies(data_list) -> None:
+    count = 0
+    for data in data_list:
+        print(f'{count+1}) Вакансия: {data.name} / Ссылка: {data.url}\n'
+              f'Город: {data.area}\n'
+              f'Зарплата: {data.salary} {data.currency} / Средняя ЗП: {data.average_salary} {data.currency}\n'
+              f'График работы: {data.schedule}\n')
+        count += 1
+
+def string_to_number(string) -> int:
+    """
+    Возвращает число из числа-строки
+    :param string: строка
+    :return: число
+    """
+    try:
+        number = int(float(string))
+        return number
+    except ValueError:
+        return 0
+
