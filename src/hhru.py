@@ -20,7 +20,6 @@ class VacanciesManager:
         self.area = area
         self.requirement = requirement
 
-
     def sorted_list(self):
         """Сортирует JSON файл и возвращает новый список словарей с нужными нам параметрами """
 
@@ -75,7 +74,8 @@ class VacanciesManager:
             area = item['area']
             requirement = item['requirement']
 
-            vacancy = VacanciesManager(name, url, salary, salary_from, salary_to, currency, schedule, average_salary, area, requirement)
+            vacancy = VacanciesManager(name, url, salary, salary_from, salary_to, currency, schedule, average_salary,
+                                       area, requirement)
             VacanciesManager.all.append(vacancy)
         return VacanciesManager.all
 
@@ -107,23 +107,20 @@ class VacanciesManager:
                 data['salary'] = f"{data['salary_from']} - {data['salary_to']}"
                 data['currency'] = 'RUR'
 
-
     def __repr__(self):
         """Отображает информацию для разработчика"""
+
         return f'{self.__class__.__name__},{self.name}, {self.url}, {self.area}, {self.salary}, {self.salary_from}, ' \
                f'{self.salary_to}, {self.average_salary}, {self.currency}, {self.schedule}, {self.requirement}'
 
-
     def __str__(self) -> str:
-        """
-        Отображает информацию о ваканси для пользователей
-        """
+        """Отображает информацию о ваканси для пользователей"""
+
         return f'{self.name}: {self.salary}'
 
     def __ge__(self, other) -> bool:
-        """
-        Проверяет, является ли зарпата по данной вакансии выше или равна другой
-        """
+        """Проверяет, является ли зарпата по данной вакансии выше или равна другой"""
+
         if isinstance(other, self.__class__):
             return {self.average_salary} >= other.average_salary
         elif isinstance(other, int):
@@ -132,9 +129,8 @@ class VacanciesManager:
             raise TypeError("Сравнение данных объектов невозможно")
 
     def __gt__(self, other) -> bool:
-        """
-        Проверяет, является ли средняя зарпата по данной вакансии выше другой
-        """
+        """Проверяет, является ли средняя зарпата по данной вакансии выше другой"""
+
         if isinstance(other, self.__class__):
             return self.average_salary > other.average_salary
         elif isinstance(other, int):
@@ -143,9 +139,8 @@ class VacanciesManager:
             raise TypeError("Сравнение данных объектов невозможно")
 
     def __le__(self, other) -> bool:
-        """
-        Проверяет, является ли зарпата по данной вакансии ниже или равна другой
-        """
+        """Проверяет, является ли зарпата по данной вакансии ниже или равна другой"""
+
         if isinstance(other, self.__class__):
             return self.average_salary <= other.average_salary
         elif isinstance(other, int):
@@ -154,9 +149,8 @@ class VacanciesManager:
             raise TypeError("Сравнение данных объектов невозможно")
 
     def __lt__(self, other) -> bool:
-        """
-        Проверяет, является ли зарпата по данной вакансии ниже другой
-        """
+        """Проверяет, является ли зарпата по данной вакансии ниже другой"""
+
         if isinstance(other, self.__class__):
             return self.average_salary < other.average_salary
         elif isinstance(other, int):
