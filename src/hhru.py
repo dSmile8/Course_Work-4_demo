@@ -3,7 +3,9 @@ from src.work_with_file import WorkWithFile
 
 class VacanciesManager:
     all = []
-    def __init__(self, name=None, url=None, salary=0, salary_from=None, salary_to=None, currency=None, schedule=None, average_salary=None):
+
+    def __init__(self, name=None, url=None, salary=0, salary_from=None, salary_to=None, currency=None, schedule=None,
+                 average_salary=None):
         self.vacancies_list = None
         a = WorkWithFile()
         self.data = a.data_from_json()['items']
@@ -97,3 +99,16 @@ class VacanciesManager:
                 data['salary_to'] *= 100
                 data['salary'] = f"{data['salary_from']} - {data['salary_to']}"
                 data['currency'] = 'RUR'
+
+
+    def __repr__(self):
+        """Отображает информацию для разработчика"""
+        return f'{self.__class__.__name__},{self.name}, {self.url}, {self.salary}, {self.salary_from}, ' \
+               f'{self.salary_to}, {self.currency}, {self.schedule}, {self.average_salary}'
+
+
+    def __str__(self) -> str:
+        """
+        Отображает информацию о ваканси для пользователей
+        """
+        return f'{self.name}: {self.salary}'
