@@ -1,79 +1,20 @@
-from abc import ABC, abstractmethod
-import requests
-import json
-from pathlib import Path
+from src.work_with_file import WorkWithFile
 
 
-class ApiVacanciService(ABC):
-    pass
-
-    @abstractmethod
-    def get_vacancies(self, name):
-        pass
-
-
-class HeadHunterAPI(ApiVacanciService):
-    def __init__(self):
-        self.url = 'https://api.hh.ru/vacancies'
-
-    def get_vacancies(self, name: str = None):
-        """
-        Метод получает список вакансий
-        :param name: название профессии
-        """
-        params = {
-            'text': name,
-            'per_page': 100,  # количество вакансий
-            'area': '1'  # Регион. Необходимо передавать id из справочника /areas.
-        }
-        response = requests.get(self.url, params=params)
-        vacancies = response.json()
-        return vacancies
-
-
-class BaseWorkWithFile(ABC):
-    @abstractmethod
-    def save_to_json(self, data):
-        pass
-
-    @abstractmethod
-    def data_from_json(self):
-        pass
-
-    @abstractmethod
-    def delete_data_from_json(self):
-        pass
-
-
-class WorkWithFile(BaseWorkWithFile):
-    DATA_DIR = Path(__file__).parent.parent.joinpath('data', 'hh.json')
-
-    def __init__(self):
-        self.data = None
-
-    def save_to_json(self, data1):
-        """Сохраняет данные в файл"""
-
-        self.data = data1
-        with open(self.DATA_DIR, "w", encoding="utf-8") as f:
-            json.dump(self.data, f, ensure_ascii=False)
-
-    def data_from_json(self):
-        """Получает данные из файла"""
-
-        with open(WorkWithFile.DATA_DIR, "r", encoding="utf-8") as f:
-            data_dict = json.load(f)
-            return data_dict
-
-    def delete_data_from_json(self):
-        pass
-
-
-class VacanciesManager(WorkWithFile):
-    def __init__(self):
-        super().__init__()
+class VacanciesManager:
+    all = []
+    def __init__(self, name=None, url=None, salary=0, salary_from=None, salary_to=None, currency=None, schedule=None, average_salary=None):
         self.vacancies_list = None
-        self.data = WorkWithFile.data_from_json(self)['items']
+        a = WorkWithFile()
+        self.data = a.data_from_json()['items']
+        self.name = name
+        self.url = url
+        self.salary = salary
+        self.salary_from = salary_from
+        self.salary_to = salary_to
+        self.currency = currency
+        self.schedule = schedule
+        self.average_salary = average_salary
 
     def sorted_list(self):
         """Сортирует JSON файл и возвращает новый список словарей с нужными нам параметрами """
@@ -110,6 +51,25 @@ class VacanciesManager(WorkWithFile):
         self.convert_currency()
         return self.vacancies_list
 
+    def cast_to_object_list(cls, data) -> list:
+        """
+        Создает список объектов класса Vacancy по данным из sorted list
+        """
+
+        for item in data:
+            name = item['name']
+            url = item['url']
+            salary = item['salary']
+            salary_from = item['salary_from']
+            salary_to = item['salary_to']
+            currency = item['currency']
+            schedule = item['schedule']
+            average_salary = item['average_salary']
+
+            vacancy = VacanciesManager(name, url, salary, salary_from, salary_to, currency, schedule, average_salary)
+            VacanciesManager.all.append(vacancy)
+        return VacanciesManager.all
+
     def get_average_salary(self):
         """Получаем значение средней зарплаты и добавляем в список новый ключ: average_salary
            Средняя зарплата считается следующим образом:
@@ -137,4 +97,3 @@ class VacanciesManager(WorkWithFile):
                 data['salary_to'] *= 100
                 data['salary'] = f"{data['salary_from']} - {data['salary_to']}"
                 data['currency'] = 'RUR'
-
